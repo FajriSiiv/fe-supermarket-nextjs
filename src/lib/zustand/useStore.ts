@@ -10,7 +10,7 @@ export const useStore = create((set) => ({
 
   updateQuantity: (id, quantity) =>
     set((state) => ({
-      transactions: state.transaction.map((transaction) =>
+      transactions: state.transactions.map((transaction) =>
         transaction.id === id ? { ...transaction, quantity } : transaction
       ),
     })),

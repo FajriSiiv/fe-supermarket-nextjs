@@ -1,4 +1,6 @@
 "use client";
+import Modal from "@/components/Alert/Modal";
+import { useAlert } from "@/hooks/useAlert";
 import { useStore } from "@/lib/zustand/useStore";
 import React, { useState } from "react";
 
@@ -6,12 +8,29 @@ const SidebarTransactions = () => {
   const { transactions, removeTransaction, updateQuantity } = useStore();
   const [sentTransactions, setSentTransactions] = useState();
 
+  const { success, isModalOpen, message, onYes, onNo, closeModal } = useAlert();
+
+  // Aksi untuk No
+  const handleNo = () => {
+    console.log("Tidak berhasil");
+  };
+
   const handleRemoveTransaction = (id) => {
     removeTransaction(id);
   };
 
-  const handleUpdateQuantity = (id, quantity) => {
-    updateQuantity(id, quantity);
+  const handleUpdateQuantity = (id, quantity, condition) => {
+    if (condition === "increment") {
+      updateQuantity(id, quantity + 1);
+    } else if (condition === "decrease" && quantity <= 1) {
+      success(
+        `Hapus produk ini dari daftar belanja?`,
+        () => removeTransaction(id),
+        handleNo
+      );
+    } else if (condition === "decrease") {
+      updateQuantity(id, quantity - 1);
+    }
   };
 
   const totalPrice = transactions.reduce((total, transaction) => {
@@ -19,13 +38,26 @@ const SidebarTransactions = () => {
   }, 0);
 
   const sentToAPI = () => {
-    setSentTransactions({ total: totalPrice, transactions });
-
-    console.log(sentTransactions);
+    success(
+      "Buat pesanan?",
+      () => setSentTransactions({ total: totalPrice, transactions }),
+      handleNo
+    );
   };
+
+  console.log(sentTransactions);
 
   return (
     <div className="rounded-md min-h-[90vh] flex flex-col justify-between">
+      {isModalOpen && (
+        <Modal
+          message={message}
+          onYes={onYes}
+          onNo={onNo}
+          onClose={closeModal}
+        />
+      )}
+
       <div className="w-full bg-slate-200 flex flex-col p-2 gap-y-2 h-[80vh] overflow-y-scroll sidebar-scroll rounded-md">
         {transactions.map((transaction, index) => (
           <div
@@ -36,9 +68,33 @@ const SidebarTransactions = () => {
               {transaction.title.slice(0.4)}
             </span>
             <span className="font-semibold">Price : ${transaction.price}</span>
-            <span className="font-semibold">
-              Quantity :{transaction.quantity}
+            <button
+              className="font-semibold  bg-rose-500 text-white col-span-1"
+              onClick={() =>
+                handleUpdateQuantity(
+                  transaction.id,
+                  transaction.quantity,
+                  "decrease"
+                )
+              }
+            >
+              -
+            </button>
+            <span className="col-span-2 text-center">
+              {transaction.quantity}
             </span>
+            <button
+              onClick={() =>
+                handleUpdateQuantity(
+                  transaction.id,
+                  transaction.quantity,
+                  "increment"
+                )
+              }
+              className="font-semibold  bg-rose-500 text-white col-span-1"
+            >
+              +
+            </button>
             <button
               onClick={() => handleRemoveTransaction(transaction.id)}
               className="bg-rose-600 rounded-sm text-white my-1"
@@ -49,7 +105,10 @@ const SidebarTransactions = () => {
         ))}
       </div>
       <div className="h-[8vh] bg-slate-700 p-2 rounded-md flex justify-center items-center text-white">
-        <button className="text-lg font-semibold" onClick={() => sentToAPI()}>
+        <button
+          className="w-full h-full text-lg font-semibold"
+          onClick={() => sentToAPI()}
+        >
           Total : ${totalPrice.toFixed(2)}
         </button>
       </div>
