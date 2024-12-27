@@ -9,27 +9,27 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ message, onYes, onNo, onClose }) => {
   return (
-    <div className="fixed top-1/2 left-1/2 w-[300px] h-[200px] bg-slate-500 flex justify-center items-center">
-      <div className="bg-white p-5 rounded-md text-center">
+    <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[200px]  flex justify-center items-center">
+      <div className="bg-white p-5 rounded-md text-center border-2 border-rose-600">
         <p>{message}</p>
-        <div className="">
+        <div className="text-white">
           <button
-            className="m-3 py-3 px-5 cursor-pointer"
+            className="m-3 py-1 px-5 cursor-pointer bg-emerald-600 rounded-sm"
             onClick={() => {
               onYes();
               onClose();
             }}
           >
-            Yes
+            Ya
           </button>
           <button
-            className="m-3 py-3 px-5 cursor-pointer"
+            className="m-3 py-1 px-5 cursor-pointer bg-rose-600 rounded-sm"
             onClick={() => {
               onNo();
               onClose();
             }}
           >
-            No
+            Tidak
           </button>
         </div>
       </div>

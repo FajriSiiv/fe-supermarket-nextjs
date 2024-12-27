@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 
 const ClientDashboard = () => {
   const [allProducts, setAllProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const { transactions, addTransaction, updateTransaction } = useStore();
 
@@ -31,11 +32,19 @@ const ClientDashboard = () => {
   };
 
   const fetchData = async () => {
-    const response = await fetch(
-      "https://fakestoreapi.com/products?limit=10"
-    ).then((res) => res.json());
+    setLoading(true);
 
-    setAllProducts(response.map((product) => ({ ...product, quantity: 1 })));
+    try {
+      const response = await fetch(
+        "https://fakestoreapi.com/products?limit=10"
+      ).then((res) => res.json());
+
+      setAllProducts(response.map((product) => ({ ...product, quantity: 1 })));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const incrementQuantity = (id) => {
@@ -64,6 +73,7 @@ const ClientDashboard = () => {
 
   return (
     <div className="bg-rose-100 rounded-md h-fit p-5 grid md:grid-cols-3 lg:grid-cols-4 gap-5">
+      {loading && <p>Loading..</p>}
       {allProducts.map((product, index) => {
         return (
           <div
