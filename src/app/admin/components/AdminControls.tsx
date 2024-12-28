@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+import DropdownAction from "./DropdownAction";
 
 const AdminControls = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [actionBtn, setActionBtn] = useState(null);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -19,6 +21,13 @@ const AdminControls = () => {
       console.log(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Hapus action nya jika mengklik di luar parentnya
+  const removeAction = (e, idParent, setAction) => {
+    if (!e.target.closest(`${idParent}`)) {
+      setAction(null);
     }
   };
 
@@ -48,13 +57,9 @@ const AdminControls = () => {
     },
     {
       name: "Action",
-      selector: (row) => (
-        <div className="py-2 px-3 bg-[#f3f3f3] rounded-md flex justify-center items-center font-bold">
-          ...
-        </div>
-      ),
+      selector: (row) => <DropdownAction id={row.id} />,
       center: "true" || true,
-      width: "100px",
+      width: "200px",
     },
   ];
 
