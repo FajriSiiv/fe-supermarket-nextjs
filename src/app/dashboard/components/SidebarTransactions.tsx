@@ -1,8 +1,11 @@
 "use client";
 import Modal from "@/components/Alert/Modal";
+import Button from "@/components/Button/BasicButton";
 import { useAlert } from "@/hooks/useAlert";
 import { useStore } from "@/lib/zustand/useStore";
+import { AnimatePresence } from "motion/react";
 import React, { useState } from "react";
+import { TransactionsModal, useTransactionsModal } from "./TransactionsModal";
 
 const SidebarTransactions = () => {
   const { transactions, removeTransaction, updateQuantity } = useStore();
@@ -10,7 +13,14 @@ const SidebarTransactions = () => {
 
   const { success, isModalOpen, message, onYes, onNo, closeModal } = useAlert();
 
-  // Aksi untuk No
+  const {
+    openModal: openModalTransaction,
+    closeModal: closeModalTransaction,
+    isModalOpen: isModalOpenTrasaction,
+    onNo: onNoClick,
+    onYes: onYesClick,
+  } = useTransactionsModal();
+
   const handleNo = () => {
     console.log("Tidak berhasil");
   };
@@ -45,26 +55,28 @@ const SidebarTransactions = () => {
     if (transactions.length <= 0) {
       console.log("Belanja 0");
     } else {
-      success(
-        "Buat pesanan?",
-        () => {
-          setSentTransactions({ total: totalPrice, transactions });
-        },
-        handleNo
-      );
+      openModalTransaction(() => {
+        // setSentTransactions({ total: totalPrice, transactions });
+        console.log("sent transactions");
+      }, handleNo);
     }
   };
 
   return (
     <div className="rounded-md min-h-[90vh] flex flex-col justify-between">
-      {isModalOpen && (
-        <Modal
-          message={message}
-          onYes={onYes}
-          onNo={onNo}
-          onClose={closeModal}
-        />
-      )}
+      <AnimatePresence>
+        {isModalOpen && (
+          <Modal
+            message={message}
+            onYes={onYes}
+            onNo={onNo}
+            onClose={closeModal}
+          />
+        )}
+        {isModalOpenTrasaction && (
+          <TransactionsModal onClose={closeModalTransaction} />
+        )}
+      </AnimatePresence>
 
       <div className="w-full bg-slate-200 flex flex-col p-2 gap-y-2 h-[80vh] overflow-y-scroll sidebar-scroll rounded-md">
         {transactions.map((transaction, index) => (
@@ -77,8 +89,7 @@ const SidebarTransactions = () => {
             </span>
             <span className="font-semibold">Price : ${transaction.price}</span>
             <div className="flex items-center justify-between">
-              <button
-                className="font-semibold  bg-rose-500 text-white col-span-1 w-12 rounded-sm"
+              <Button
                 onClick={() =>
                   handleUpdateQuantity(
                     transaction.id,
@@ -86,13 +97,12 @@ const SidebarTransactions = () => {
                     "decrease"
                   )
                 }
-              >
-                -
-              </button>
+                text="-"
+              />
               <span className="col-span-2 text-center">
                 {transaction.quantity}
               </span>
-              <button
+              <Button
                 onClick={() =>
                   handleUpdateQuantity(
                     transaction.id,
@@ -100,17 +110,16 @@ const SidebarTransactions = () => {
                     "increment"
                   )
                 }
-                className="font-semibold  bg-rose-500 text-white col-span-1 w-12 rounded-sm"
-              >
-                +
-              </button>
+                text="+"
+              />
             </div>
-            <button
+            <Button
               onClick={() => handleRemoveTransaction(transaction.id)}
-              className="bg-rose-500 rounded-sm text-white my-1 py-1"
-            >
-              Delete
-            </button>
+              text="Delete"
+              bgC="bg-rose-600 hover:bg-rose-600/80"
+              className="mt-1"
+              textColor="text-white"
+            />
           </div>
         ))}
       </div>
