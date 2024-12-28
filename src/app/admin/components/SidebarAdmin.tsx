@@ -7,7 +7,7 @@ const SidebarAdmin = () => {
         Products
       </div>
       <div className="py-3 w-full bg-rose-500 rounded-md flex justify-center items-center">
-        Products
+        Transactions
       </div>
     </div>
   );

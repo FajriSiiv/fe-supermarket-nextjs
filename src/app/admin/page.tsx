@@ -1,6 +1,7 @@
 import React from "react";
 import AdminControls from "./components/AdminControls";
 import SidebarAdmin from "./components/SidebarAdmin";
+import QRScanner from "./components/QRScanner";
 
 const Admin = () => {
   return (
