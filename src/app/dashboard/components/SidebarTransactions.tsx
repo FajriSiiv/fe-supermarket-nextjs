@@ -16,7 +16,11 @@ const SidebarTransactions = () => {
   };
 
   const handleRemoveTransaction = (id) => {
-    removeTransaction(id);
+    success(
+      `Hapus produk ini dari daftar belanja?`,
+      () => removeTransaction(id),
+      handleNo
+    );
   };
 
   const handleUpdateQuantity = (id, quantity, condition) => {
@@ -38,14 +42,18 @@ const SidebarTransactions = () => {
   }, 0);
 
   const sentToAPI = () => {
-    success(
-      "Buat pesanan?",
-      () => setSentTransactions({ total: totalPrice, transactions }),
-      handleNo
-    );
+    if (transactions.length <= 0) {
+      console.log("Belanja 0");
+    } else {
+      success(
+        "Buat pesanan?",
+        () => {
+          setSentTransactions({ total: totalPrice, transactions });
+        },
+        handleNo
+      );
+    }
   };
-
-  console.log(sentTransactions);
 
   return (
     <div className="rounded-md min-h-[90vh] flex flex-col justify-between">
@@ -68,36 +76,38 @@ const SidebarTransactions = () => {
               {transaction.title.slice(0.4)}
             </span>
             <span className="font-semibold">Price : ${transaction.price}</span>
-            <button
-              className="font-semibold  bg-rose-500 text-white col-span-1"
-              onClick={() =>
-                handleUpdateQuantity(
-                  transaction.id,
-                  transaction.quantity,
-                  "decrease"
-                )
-              }
-            >
-              -
-            </button>
-            <span className="col-span-2 text-center">
-              {transaction.quantity}
-            </span>
-            <button
-              onClick={() =>
-                handleUpdateQuantity(
-                  transaction.id,
-                  transaction.quantity,
-                  "increment"
-                )
-              }
-              className="font-semibold  bg-rose-500 text-white col-span-1"
-            >
-              +
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                className="font-semibold  bg-rose-500 text-white col-span-1 w-12 rounded-sm"
+                onClick={() =>
+                  handleUpdateQuantity(
+                    transaction.id,
+                    transaction.quantity,
+                    "decrease"
+                  )
+                }
+              >
+                -
+              </button>
+              <span className="col-span-2 text-center">
+                {transaction.quantity}
+              </span>
+              <button
+                onClick={() =>
+                  handleUpdateQuantity(
+                    transaction.id,
+                    transaction.quantity,
+                    "increment"
+                  )
+                }
+                className="font-semibold  bg-rose-500 text-white col-span-1 w-12 rounded-sm"
+              >
+                +
+              </button>
+            </div>
             <button
               onClick={() => handleRemoveTransaction(transaction.id)}
-              className="bg-rose-600 rounded-sm text-white my-1"
+              className="bg-rose-500 rounded-sm text-white my-1 py-1"
             >
               Delete
             </button>
@@ -108,6 +118,7 @@ const SidebarTransactions = () => {
         <button
           className="w-full h-full text-lg font-semibold"
           onClick={() => sentToAPI()}
+          disabled={transactions.length <= 0}
         >
           Total : ${totalPrice.toFixed(2)}
         </button>
