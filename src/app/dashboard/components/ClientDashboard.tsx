@@ -1,18 +1,19 @@
 "use client";
 
 import Button from "@/components/Button/BasicButton";
+import { ProductProps, TransactionProps } from "@/interfaces";
 import { useStore } from "@/lib/zustand/useStore";
 import React, { useEffect, useState } from "react";
 
 const ClientDashboard = () => {
-  const [allProducts, setAllProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState<ProductProps[]>([]);
   const [loading, setLoading] = useState(false);
 
   const { transactions, addTransaction, updateTransaction } = useStore();
 
-  const handleAddTransaction = (product) => {
-    const checkTransaction = transactions.find(
-      (transaction) => transaction.idProduct === product.id
+  const handleAddTransaction = (product: ProductProps) => {
+    const checkTransaction: any = transactions.find(
+      (transaction: any) => transaction.idProduct === product.id
     );
 
     if (checkTransaction) {
@@ -20,7 +21,7 @@ const ClientDashboard = () => {
         quantity: checkTransaction.quantity + product.quantity,
       });
     } else {
-      const newTrasaction = {
+      const newTrasaction: any = {
         price: product.price,
         id: transactions.length + 1,
         title: product.title,
@@ -40,7 +41,9 @@ const ClientDashboard = () => {
         "https://fakestoreapi.com/products?limit=10"
       ).then((res) => res.json());
 
-      setAllProducts(response.map((product) => ({ ...product, quantity: 1 })));
+      setAllProducts(
+        response.map((product: ProductProps) => ({ ...product, quantity: 1 }))
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -48,7 +51,7 @@ const ClientDashboard = () => {
     }
   };
 
-  const incrementQuantity = (id) => {
+  const incrementQuantity = (id: number | string) => {
     setAllProducts((products) =>
       products.map((product) =>
         product.id === id
@@ -58,7 +61,7 @@ const ClientDashboard = () => {
     );
   };
 
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (id: string | number) => {
     setAllProducts((products) =>
       products.map((product) =>
         product.id === id
@@ -87,27 +90,22 @@ const ClientDashboard = () => {
             </span>
 
             <div className="grid grid-cols-4 items-center my-2">
-              <button
-                className="font-semibold  bg-rose-500 text-white col-span-1"
+              <Button
+                text="-"
                 onClick={() => decreaseQuantity(product.id)}
                 disabled={product.quantity <= 1}
-              >
-                -
-              </button>
+              />
+
               <span className="col-span-2 text-center">{product.quantity}</span>
-              <button
-                className="font-semibold  bg-rose-500 text-white col-span-1"
-                onClick={() => incrementQuantity(product.id)}
-              >
-                +
-              </button>
+              <Button text="+" onClick={() => incrementQuantity(product.id)} />
             </div>
-            <button
-              className="w-full py-1 bg-emerald-600 rounded-md text-white font-semibold"
+
+            <Button
+              text="Buy"
+              bgC="bg-emerald-500 hover:bg-emerald-600/90"
               onClick={() => handleAddTransaction(product)}
-            >
-              Buy
-            </button>
+              textColor="text-white"
+            />
           </div>
         );
       })}

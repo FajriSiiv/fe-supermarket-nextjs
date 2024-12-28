@@ -1,6 +1,18 @@
+import { TransactionProps } from "@/interfaces";
 import { create } from "zustand";
 
-export const useStore = create((set) => ({
+interface Store {
+  transactions: TransactionProps[];
+  addTransaction: (transaction: TransactionProps) => void;
+  updateTransaction: (
+    id: string,
+    updatedTransaction: Partial<TransactionProps>
+  ) => void;
+  removeTransaction: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
+}
+
+export const useStore = create<Store>((set) => ({
   transactions: [],
 
   addTransaction: (transaction: any) =>

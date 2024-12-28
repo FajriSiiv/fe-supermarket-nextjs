@@ -1,12 +1,14 @@
 import React from "react";
 
 interface ButtonProps {
-  text: string;
-  className: string;
-  paddingY: string;
-  paddingX: string;
+  text?: string;
+  className?: string;
+  paddingY?: string;
+  paddingX?: string;
   onClick?: () => void;
-  disable?: boolean;
+  disabled?: boolean;
+  bgC?: string;
+  textColor?: string;
 }
 
 const Button = ({
@@ -15,15 +17,23 @@ const Button = ({
   paddingY,
   paddingX,
   onClick,
-  disable = false,
+  disabled = false,
+  bgC,
+  textColor,
 }: ButtonProps) => {
+  console.log(disabled);
+
   return (
     <button
-      className={`bg-white border-[1px] border-solid border-[#d1d5db] rounded-lg text-slate-900 text-sm font-bold leading-5  text-center cursor-pointer touch-manipulation hover:bg-[#f9fafb] focus:border-[#00000019] ${
+      className={`${
+        bgC ? bgC : "bg-[#ffffff]"
+      } border-[1px] border-solid border-[#d1d5db] rounded-lg ${
+        textColor ? textColor : "text-slate-900"
+      } text-sm font-semibold leading-5  text-center cursor-pointer touch-manipulation   focus:border-[#00000019] ${
         paddingY ? paddingY : "py-2"
-      } ${paddingX ? paddingX : "px-3"} ${className}`}
+      } ${paddingX ? paddingX : "px-3"} ${className} disabled:opacity-70`}
       onClick={onClick}
-      disabled={disable}
+      disabled={disabled}
     >
       {text ? text : "Button"}
     </button>
