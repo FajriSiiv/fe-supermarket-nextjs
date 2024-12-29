@@ -33,7 +33,14 @@ export const useTransactionsModal = () => {
 };
 
 export const TransactionsModal = ({ onClose }: { onClose: () => void }) => {
+  const [loading, setLoading] = useState(false);
   const { transactions } = useStore();
+
+  const total = transactions
+    .reduce((total, transaction) => {
+      return total + transaction.price * transaction.quantity;
+    }, 0)
+    .toFixed(2);
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.8 },
@@ -43,6 +50,23 @@ export const TransactionsModal = ({ onClose }: { onClose: () => void }) => {
   const variantParents = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
+  };
+
+  const handleAPITransaction = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        "https://fakestoreapi.com/products?limit=10"
+      ).then((res) => res.json());
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      window.location.href = "/";
+      onClose();
+    }
   };
 
   return (
@@ -62,45 +86,44 @@ export const TransactionsModal = ({ onClose }: { onClose: () => void }) => {
         transition={{ duration: 0.1 }}
         className=" w-[400px] absolute top-10 left-[35%] -translate-x-1/2  bg-slate-700 p-5 rounded-md"
       >
-        <h2 className="text-white text-2xl font-semibold mb-4">
-          Transaction ID
-        </h2>
+        <div className="flex justify-between items-center w-full mb-3">
+          <h2 className="text-white text-2xl font-semibold">Transaction</h2>
+          <Button
+            className="w-fit border-none"
+            onClick={() => {
+              onClose();
+            }}
+            text="X"
+            bgC="bg-white hover:bg-rose-500"
+            textColor="hover:text-white"
+          />
+        </div>
         <div className="h-[450px] overflow-y-scroll flex flex-col gap-y-2 ">
-          <Disclosure as="div" defaultOpen={true}>
-            <DisclosureButton className="group flex w-full items-center justify-between bg-slate-500 p-2 rounded-sm">
-              <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
-                What is your refund policy?
-              </span>
+          {transactions.map((transaction, index) => (
+            <Disclosure as="div" defaultOpen={false} key={index}>
+              <DisclosureButton className="group flex w-full items-center justify-between bg-slate-500 p-2 rounded-sm gap-6">
+                <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
+                  {transaction.title}
+                </span>
 
-              <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
-                x2
-              </span>
-            </DisclosureButton>
-            <DisclosurePanel className="mt-2 text-sm/5 text-white/50 bg-slate-500 p-2 rounded-sm">
-              If you're unhappy with your purchase, we'll refund you in full.
-            </DisclosurePanel>
-          </Disclosure>
-          <Disclosure as="div" defaultOpen={true}>
-            <DisclosureButton className="group flex w-full items-center justify-between bg-slate-500 p-2 rounded-sm">
-              <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
-                What is your refund policy?
-              </span>
-
-              <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
-                x2
-              </span>
-            </DisclosureButton>
-            <DisclosurePanel className="mt-2 text-sm/5 text-white/50 bg-slate-500 p-2 rounded-sm">
-              If you're unhappy with your purchase, we'll refund you in full.
-            </DisclosurePanel>
-          </Disclosure>
+                <span className="text-sm/6 font-medium text-white group-data-[hover]:text-white/80">
+                  x{transaction.quantity}
+                </span>
+              </DisclosureButton>
+              <DisclosurePanel className="mt-2 text-sm/5 text-white/90 bg-slate-500 p-2 rounded-sm flex flex-col">
+                <p>Name : {transaction.title}</p>
+                <p>Quantity : {transaction.quantity}</p>
+                <p>Price : ${transaction.price}</p>
+              </DisclosurePanel>
+            </Disclosure>
+          ))}
         </div>
 
         <Button
           className="w-full mt-5"
-          onClick={() => {
-            onClose();
-          }}
+          onClick={handleAPITransaction}
+          text={loading ? "Loading..." : `Bayar $${total}`}
+          disabled={loading}
         />
       </motion.div>
     </motion.div>

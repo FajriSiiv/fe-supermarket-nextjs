@@ -1,7 +1,7 @@
 import React from "react";
 import AdminControls from "./components/AdminControls";
 import SidebarAdmin from "./components/SidebarAdmin";
-import QRScanner from "./components/QRScanner";
+import { Toaster } from "react-hot-toast";
 
 const Admin = () => {
   return (
@@ -12,6 +12,7 @@ const Admin = () => {
       <div className="col-span-5">
         <AdminControls />
       </div>
+      <Toaster />
     </div>
   );
 };
