@@ -5,6 +5,7 @@ import DropdownAction from "./DropdownAction";
 import { useAlert } from "@/hooks/useAlert";
 import Modal from "@/components/Alert/Modal";
 import EditModal from "./EditModal";
+import { ProductProps } from "@/interfaces";
 
 const AdminControls = () => {
   const [products, setProducts] = useState([]);
@@ -12,7 +13,7 @@ const AdminControls = () => {
   const [actionBtn, setActionBtn] = useState(null);
   const [onOpen, setOnOpen] = useState(false);
   const [isEditModal, setIsEditModal] = useState(false);
-  const [selectProduct, setSelectProduct] = useState({});
+  const [selectProduct, setSelectProduct] = useState<any | undefined>({});
 
   const { closeModal, isModalOpen, message, onNo, onYes, success } = useAlert();
 
@@ -31,12 +32,12 @@ const AdminControls = () => {
     }
   };
 
-  const handleEditProduct = async (id) => {
+  const handleEditProduct = async (id: number | string) => {
     if (isEditModal) {
       setIsEditModal(false);
     } else if (!isEditModal) {
       setSelectProduct(
-        () => products.filter((product) => product.id === id)[0]
+        () => products.filter((product: ProductProps) => product.id === id)[0]
       );
       setIsEditModal(true);
     } else {
@@ -52,25 +53,29 @@ const AdminControls = () => {
     },
   };
 
-  const columns: any = [
+  const columns: any[] = [
     {
       name: "Title",
-      selector: (row) => <>{row.title.slice(0, 20)}...</>,
+      selector: (row: { title: string }) => <>{row.title.slice(0, 20)}...</>,
       width: "240px",
     },
     {
       name: "Price",
-      selector: (row) => <p className="text-center">${row.price}</p>,
+      selector: (row: { price: number | string }) => (
+        <p className="text-center">${row.price}</p>
+      ),
       center: "true" || true,
       width: "200px",
     },
     {
       name: "Description",
-      selector: (row) => <>{row.description.slice(0, 40)}...</>,
+      selector: (row: { description: string }) => (
+        <>{row.description.slice(0, 40)}...</>
+      ),
     },
     {
       name: "Action",
-      selector: (row) => (
+      selector: (row: { id: string }) => (
         <>
           <DropdownAction
             success={success}

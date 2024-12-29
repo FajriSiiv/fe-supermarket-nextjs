@@ -5,11 +5,11 @@ interface Store {
   transactions: TransactionProps[];
   addTransaction: (transaction: TransactionProps) => void;
   updateTransaction: (
-    id: string,
+    id: number,
     updatedTransaction: Partial<TransactionProps>
   ) => void;
-  removeTransaction: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  removeTransaction: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
 }
 
 export const useStore = create<Store>((set) => ({

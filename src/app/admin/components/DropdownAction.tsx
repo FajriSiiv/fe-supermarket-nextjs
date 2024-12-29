@@ -19,7 +19,7 @@ const DropdownAction = ({
   handleEditProduct,
 }: {
   id: string;
-  success: (message, onNo, onYes) => void;
+  success: (message: string, onNo: () => void, onYes: () => void) => void;
   onOpen: boolean;
   setOnOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleEditProduct: (id: string) => void;
@@ -54,7 +54,6 @@ const DropdownAction = ({
       >
         ...
       </MenuButton>
-      {/* <Transition show={onOpen}> */}
       <MenuItems
         anchor="left"
         className="origin-top-right rounded-md bg-black p-2 text-xs flex flex-col gap-2 "
@@ -62,18 +61,6 @@ const DropdownAction = ({
         <MenuItem>
           <Button
             text="Edit"
-            // onClick={() => {
-            //   success(
-            //     "Ingin dihapus?",
-            //     () => {
-            //       handleDeleteProduct(id);
-            //       console.log(id);
-
-            //       toast.success("Berhasil dihapus");
-            //     },
-            //     () => console.log("No", id)
-            //   );
-            // }}
             onClick={() => handleEditProduct(id)}
             className="!text-xs rounded-md"
           />
@@ -97,7 +84,6 @@ const DropdownAction = ({
           />
         </MenuItem>
       </MenuItems>
-      {/* </Transition> */}
     </Menu>
   );
 };

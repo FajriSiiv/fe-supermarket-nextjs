@@ -3,12 +3,21 @@ import { Field, Input, Label } from "@headlessui/react";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
+interface ProductProps {
+  title: string;
+  price: number | string;
+  category: string;
+  id: string;
+}
+
 const EditModal = ({
   closeModal,
   product,
   setIsEditModal,
 }: {
   closeModal: () => void;
+  product: ProductProps;
+  setIsEditModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [title, setTitle] = useState<string>("");
   const [price, setPrice] = useState<number | string>(0);

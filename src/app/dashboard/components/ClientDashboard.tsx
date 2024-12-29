@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/Button/BasicButton";
-import { ProductProps, TransactionProps } from "@/interfaces";
+import { ProductProps } from "@/interfaces";
 import { useStore } from "@/lib/zustand/useStore";
 import React, { useEffect, useState } from "react";
 

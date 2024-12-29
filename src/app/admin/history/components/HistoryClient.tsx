@@ -1,9 +1,8 @@
 "use client";
-import DropdownAction from "@/app/admin/components/DropdownAction";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 
-const TransactionsControl = () => {
+const HistoryClient = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionBtn, setActionBtn] = useState(null);
@@ -24,13 +23,6 @@ const TransactionsControl = () => {
     }
   };
 
-  // Hapus action nya jika mengklik di luar parentnya
-  const removeAction = (e, idParent, setAction) => {
-    if (!e.target.closest(`${idParent}`)) {
-      setAction(null);
-    }
-  };
-
   const customStylesTable = {
     table: {
       style: {
@@ -39,17 +31,17 @@ const TransactionsControl = () => {
     },
   };
 
-  const columns = [
+  const columns: any = [
     {
       name: "ID Transaction",
-      selector: (row) => <>{row.id}</>,
+      selector: (row: { id: string }) => <>{row.id}</>,
       center: "true",
       width: "300px",
     },
 
     {
       name: "Product",
-      selector: (row) => {
+      selector: (row: { name: string }) => {
         const array = [{ name: "name" }, { name: "name2" }];
         return <div></div>;
       },
@@ -58,15 +50,17 @@ const TransactionsControl = () => {
     },
     {
       name: "Total",
-      selector: (row) => <p className="text-center">${row.price}</p>,
+      selector: (row: { price: number }) => (
+        <p className="text-center">${row.price}</p>
+      ),
       center: "true" || true,
       width: "200px",
     },
-    {
-      name: "Action",
-      selector: (row) => <DropdownAction id={row.id} />,
-      center: "true" || true,
-    },
+    // {
+    //   name: "Action",
+    //   selector: (row) => <DropdownAction id={row.id} />,
+    //   center: "true" || true,
+    // },
   ];
 
   useEffect(() => {
@@ -85,4 +79,4 @@ const TransactionsControl = () => {
   );
 };
 
-export default TransactionsControl;
+export default HistoryClient;

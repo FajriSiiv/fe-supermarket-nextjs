@@ -6,6 +6,7 @@ import { useStore } from "@/lib/zustand/useStore";
 import { AnimatePresence } from "motion/react";
 import React, { useState } from "react";
 import { TransactionsModal, useTransactionsModal } from "./TransactionsModal";
+import { TransactionProps } from "@/interfaces";
 
 const SidebarTransactions = () => {
   const { transactions, removeTransaction, updateQuantity } = useStore();
@@ -25,7 +26,7 @@ const SidebarTransactions = () => {
     console.log("Tidak berhasil");
   };
 
-  const handleRemoveTransaction = (id) => {
+  const handleRemoveTransaction = (id: number) => {
     success(
       `Hapus produk ini dari daftar belanja?`,
       () => removeTransaction(id),
@@ -33,7 +34,11 @@ const SidebarTransactions = () => {
     );
   };
 
-  const handleUpdateQuantity = (id, quantity, condition) => {
+  const handleUpdateQuantity = (
+    id: number,
+    quantity: number,
+    condition: string
+  ) => {
     if (condition === "increment") {
       updateQuantity(id, quantity + 1);
     } else if (condition === "decrease" && quantity <= 1) {
@@ -79,7 +84,7 @@ const SidebarTransactions = () => {
       </AnimatePresence>
 
       <div className="w-full bg-[#f3f3f3] flex flex-col p-2 gap-y-2 h-[80vh] overflow-y-scroll sidebar-scroll rounded-md">
-        {transactions.map((transaction, index) => (
+        {transactions.map((transaction: TransactionProps, index) => (
           <div
             key={index}
             className="h-fit flex flex-col p-2 bg-slate-200 rounded-md"
@@ -123,14 +128,23 @@ const SidebarTransactions = () => {
           </div>
         ))}
       </div>
-      <div className="h-[8vh] bg-slate-700 p-2 rounded-md flex justify-center items-center text-white">
-        <button
-          className="w-full h-full text-lg font-semibold"
-          onClick={() => sentToAPI()}
-          disabled={transactions.length <= 0}
-        >
-          Total : ${totalPrice.toFixed(2)}
-        </button>
+      <div className="h-[8vh] p-2 rounded-md flex justify-center items-center text-white">
+        {transactions.length <= 0 ? (
+          <Button
+            className="w-full h-full text-lg font-semibold "
+            onClick={() => (window.location.href = "/")}
+            textColor="text-white"
+            bgC="bg-rose-500 hover:bg-opacity-60"
+            text={`Kembali`}
+          />
+        ) : (
+          <Button
+            className="w-full h-full text-lg font-semibold"
+            onClick={() => sentToAPI()}
+            disabled={transactions.length <= 0}
+            text={`Total : $${totalPrice.toFixed(2)}`}
+          />
+        )}
       </div>
     </div>
   );

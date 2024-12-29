@@ -7,7 +7,7 @@ export interface ProductProps {
 }
 
 export interface TransactionProps {
-  id: string | number;
+  id: number;
   name: string;
   quantity: number;
   title: string;
