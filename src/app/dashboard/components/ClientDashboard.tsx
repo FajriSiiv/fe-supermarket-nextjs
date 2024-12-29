@@ -76,7 +76,7 @@ const ClientDashboard = () => {
   }, []);
 
   return (
-    <div className="bg-rose-100 rounded-md h-fit p-5 grid md:grid-cols-3 lg:grid-cols-4 gap-5">
+    <div className="bg-[#f3f3f3] rounded-md h-fit p-5 grid md:grid-cols-3 lg:grid-cols-4 gap-5">
       {loading && <p>Loading..</p>}
       {allProducts.map((product, index) => {
         return (

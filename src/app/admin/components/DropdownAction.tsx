@@ -1,79 +1,103 @@
 "use client";
-import { useAlert } from "@/hooks/useAlert";
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import React from "react";
+import Button from "@/components/Button/BasicButton";
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  Transition,
+} from "@headlessui/react";
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { motion } from "motion/react";
 
-const DropdownAction = ({ id }: { id: string }) => {
-  const handleDeleteProduct = async (id) => {
+const DropdownAction = ({
+  id,
+  success,
+  onOpen,
+  setOnOpen,
+  handleEditProduct,
+}: {
+  id: string;
+  success: (message, onNo, onYes) => void;
+  onOpen: boolean;
+  setOnOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleEditProduct: (id: string) => void;
+}) => {
+  const handleDeleteProduct = async (id: string) => {
     console.log("Delete Product", id);
 
-    // try {
-    //   const response = await fetch("api/id").then((res) => res.json());
+    try {
+      const response = await fetch(
+        `https://fakestoreapi.com/products/${id}`
+      ).then((res) => res.json());
 
-    //   if (response.ok) {
-    //     console.log(response);
-    //   } else {
-    //     console.log("Error response");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
-
-  const handleEditProduct = async (id) => {
-    console.log("Edit Product", id);
-
-    // try {
-    //   const response = await fetch("api/id", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-
-    //     body: JSON.stringify({
-    //       title: "name product",
-    //       price: "price product",
-    //     }),
-    //   }).then((res) => res.json());
-
-    //   if (response.ok) {
-    //     console.log(response);
-    //   } else {
-    //     console.log("Error response");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      if (response.ok) {
+        toast.success("Berhasil di hapus");
+      } else {
+        console.log("Error response");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <Menu>
-      <MenuButton className="px-1">
-        <div className="py-2 px-3 bg-[#f3f3f3] rounded-md flex justify-center items-center font-bold cursor-pointer">
-          ...
-        </div>
+      <MenuButton
+        className="py-2 px-3 bg-[#f3f3f3] rounded-md flex justify-center items-center font-bold cursor-pointer"
+        onClick={() => {
+          setOnOpen((open) => !open);
+          console.log(onOpen);
+        }}
+        as="div"
+      >
+        ...
       </MenuButton>
+      {/* <Transition show={onOpen}> */}
       <MenuItems
         anchor="left"
-        className="origin-top-right rounded-sm bg-black/20 p-2 text-xs flex flex-col gap-2"
+        className="origin-top-right rounded-md bg-black p-2 text-xs flex flex-col gap-2 "
       >
         <MenuItem>
-          <p
-            className="block data-[focus]:bg-blue-100 py-0.5 px-2 text-center bg-white rounded-sm"
+          <Button
+            text="Edit"
+            // onClick={() => {
+            //   success(
+            //     "Ingin dihapus?",
+            //     () => {
+            //       handleDeleteProduct(id);
+            //       console.log(id);
+
+            //       toast.success("Berhasil dihapus");
+            //     },
+            //     () => console.log("No", id)
+            //   );
+            // }}
             onClick={() => handleEditProduct(id)}
-          >
-            Edit
-          </p>
+            className="!text-xs rounded-md"
+          />
         </MenuItem>
         <MenuItem>
-          <p
-            className="block data-[focus]:bg-blue-100 py-0.5 px-2 text-center bg-white rounded-sm"
-            onClick={() => handleDeleteProduct(id)}
-          >
-            Hapus
-          </p>
+          <Button
+            text="Hapus"
+            onClick={() => {
+              success(
+                "Ingin dihapus?",
+                () => {
+                  handleDeleteProduct(id);
+                  console.log(id);
+
+                  toast.success("Berhasil dihapus");
+                },
+                () => console.log("No", id)
+              );
+            }}
+            className="!text-xs rounded-md"
+          />
         </MenuItem>
       </MenuItems>
+      {/* </Transition> */}
     </Menu>
   );
 };

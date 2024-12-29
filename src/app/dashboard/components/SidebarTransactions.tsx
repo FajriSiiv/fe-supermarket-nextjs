@@ -78,11 +78,11 @@ const SidebarTransactions = () => {
         )}
       </AnimatePresence>
 
-      <div className="w-full bg-slate-200 flex flex-col p-2 gap-y-2 h-[80vh] overflow-y-scroll sidebar-scroll rounded-md">
+      <div className="w-full bg-[#f3f3f3] flex flex-col p-2 gap-y-2 h-[80vh] overflow-y-scroll sidebar-scroll rounded-md">
         {transactions.map((transaction, index) => (
           <div
             key={index}
-            className="h-fit flex flex-col p-2 bg-slate-100 rounded-md"
+            className="h-fit flex flex-col p-2 bg-slate-200 rounded-md"
           >
             <span className="font-semibold text-sm">
               {transaction.title.slice(0.4)}

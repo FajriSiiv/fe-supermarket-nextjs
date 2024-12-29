@@ -2,11 +2,19 @@
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import DropdownAction from "./DropdownAction";
+import { useAlert } from "@/hooks/useAlert";
+import Modal from "@/components/Alert/Modal";
+import EditModal from "./EditModal";
 
 const AdminControls = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionBtn, setActionBtn] = useState(null);
+  const [onOpen, setOnOpen] = useState(false);
+  const [isEditModal, setIsEditModal] = useState(false);
+  const [selectProduct, setSelectProduct] = useState({});
+
+  const { closeModal, isModalOpen, message, onNo, onYes, success } = useAlert();
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -15,7 +23,6 @@ const AdminControls = () => {
         "https://fakestoreapi.com/products?limit=10"
       ).then((res) => res.json());
 
-      console.log(response);
       setProducts(response);
     } catch (error) {
       console.log(error);
@@ -24,10 +31,16 @@ const AdminControls = () => {
     }
   };
 
-  // Hapus action nya jika mengklik di luar parentnya
-  const removeAction = (e, idParent, setAction) => {
-    if (!e.target.closest(`${idParent}`)) {
-      setAction(null);
+  const handleEditProduct = async (id) => {
+    if (isEditModal) {
+      setIsEditModal(false);
+    } else if (!isEditModal) {
+      setSelectProduct(
+        () => products.filter((product) => product.id === id)[0]
+      );
+      setIsEditModal(true);
+    } else {
+      console.log("error");
     }
   };
 
@@ -39,7 +52,7 @@ const AdminControls = () => {
     },
   };
 
-  const columns = [
+  const columns: any = [
     {
       name: "Title",
       selector: (row) => <>{row.title.slice(0, 20)}...</>,
@@ -57,7 +70,17 @@ const AdminControls = () => {
     },
     {
       name: "Action",
-      selector: (row) => <DropdownAction id={row.id} />,
+      selector: (row) => (
+        <>
+          <DropdownAction
+            success={success}
+            id={row.id}
+            onOpen={onOpen}
+            setOnOpen={setOnOpen}
+            handleEditProduct={handleEditProduct}
+          />
+        </>
+      ),
       center: "true" || true,
       width: "200px",
     },
@@ -69,6 +92,23 @@ const AdminControls = () => {
 
   return (
     <div className="w-full">
+      {isModalOpen && (
+        <Modal
+          message={message}
+          onYes={onYes}
+          onNo={onNo}
+          onClose={closeModal}
+        />
+      )}
+
+      {isEditModal && (
+        <EditModal
+          closeModal={() => setIsEditModal(false)}
+          product={selectProduct}
+          setIsEditModal={setIsEditModal}
+        />
+      )}
+
       <DataTable
         columns={columns}
         data={products}

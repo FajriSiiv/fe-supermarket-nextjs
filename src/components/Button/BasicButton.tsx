@@ -9,6 +9,7 @@ interface ButtonProps {
   disabled?: boolean;
   bgC?: string;
   textColor?: string;
+  type?: "submit" | "button" | "reset";
 }
 
 const Button = ({
@@ -20,20 +21,20 @@ const Button = ({
   disabled = false,
   bgC,
   textColor,
+  type = "button",
 }: ButtonProps) => {
-  console.log(disabled);
-
   return (
     <button
       className={`${
         bgC ? bgC : "bg-[#ffffff]"
-      } border-[1px] border-solid border-[#d1d5db] rounded-lg ${
+      } border-[1px] border-solid border-[#d1d5db] transition-all duration-100 rounded-lg ${
         textColor ? textColor : "text-slate-900"
       } text-sm font-semibold leading-5  text-center cursor-pointer touch-manipulation   focus:border-[#00000019] ${
         paddingY ? paddingY : "py-2"
       } ${paddingX ? paddingX : "px-3"} ${className} disabled:opacity-70`}
       onClick={onClick}
       disabled={disabled}
+      type={type}
     >
       {text ? text : "Button"}
     </button>
